@@ -22,15 +22,12 @@
 # rbenv
 
 # TODO: ENHANCEMENT
-# confirmation dialogue saying this script handles rbenv or the default ruby, nodenv or the default node
-# if you have rbenv or nodenv this will work
-# if you're using system ruby or node, no guarantees
-
-# TODO: ENHANCEMENT
 # Take in target directory to the script as a param
 
 # TODO: ENHANCEMENT
 # confirmation dialogue saying this script handles rbenv or the default ruby, nodenv or the default node
+# if you have rbenv or nodenv this will work
+# if you're using system ruby or node, no guarantees
 if which brew; then
   if ! which yq; then
     brew install yq
@@ -45,32 +42,34 @@ read -rp "App Name [$(basename "$(pwd)")]: " app_name
 app_name=${app_name:-$(basename "$(pwd)")}
 constant_app_name=$(echo "$app_name" | tr '[:lower:]' '[:upper:]')
 
-# Take in user's preferred ruby version, defaults to 3.2.3
+# Take in user's preferred versions with defaults
 read -rp "Ruby version [3.2.3]: " ruby_version
-version=${ruby_version:-3.2.3}
+ruby_version=${ruby_version:-3.2.3}
+read -rp "Node version [20.12.2]: " node_version
+node_version=${node_version:-20.12.2}
+
 if command -v rbenv &>/dev/null; then
-  rbenv local "$version"
-  if ! rbenv versions | grep "$version"; then
-    rbenv install "$version"
+  rbenv local "$ruby_version"
+  if ! rbenv versions | grep "$ruby_version"; then
+    rbenv install "$ruby_version"
   fi
 # if nodenv is not installed, install latest version with brew
 else
-  brew install "ruby@${version}"
+  if ! which ruby || ! ruby -v | grep "$ruby_version"; then
+    brew install "ruby@${ruby_version}"
+  fi
 fi
 
-# Take in user's preferred node version, defaults to 20.12.2
-read -rp "Node version [20.12.2]: " node_version
-version=${node_version:-20.12.2}
 # if nodenv is installed, check for this version and install it if it doesn't exist
 if command -v nodenv &>/dev/null; then
-  nodenv local "$version"
-  if ! nodenv versions | grep "$version"; then
-    nodenv install "$version"
+  nodenv local "$node_version"
+  if ! nodenv versions | grep "$node_version"; then
+    nodenv install "$node_version"
   fi
-# if nodenv is not installed, install this version with brew
+# if nodenv is not installed, install this major version with brew (I'm not sure if you can do minor versions)
 else
-  major_version=$(echo "$version" | cut -d '.' -f1)
-  if ! which node || ! node -v == "$version"; then
+  major_version=$(echo "$node_version" | cut -d '.' -f1)
+  if ! which node || ! node -v | grep "$node_version"; then
     brew install "node@${major_version}"
   fi
 fi
@@ -85,9 +84,6 @@ gem install bundler rails
 
 # install yarn if it's not already installed
 npm install -g yarn
-
-# TODO: ENHANCEMENT
-# take in other rails new flags
 
 # initiate rails w/ postgres, esbuild, postcss
 rails new . -n "$app_name" -d postgresql -j esbuild -c postcss -T
@@ -114,7 +110,7 @@ host="<%= ENV[\"${constant_app_name}_DATABASE_HOST\"] %>" yq -i '.default.host =
 sed -i -e 's/config.force_ssl = true/config.force_ssl = false/g' config/environments/production.rb
 
 # commit the host configuration
-git add . && git commit -m "Fresh rails install with postgres, esbuild, postcss, and removing minitest"
+git add . && git commit -m "Fresh rails install with postgres, esbuild, postcss, and removing minitest; changes ssl behavior in production env for development"
 
 # create the network
 docker network create "$app_name"
