@@ -1,0 +1,10 @@
+fix: true # default: false
+parallel: true # default: false
+format: progress # default: Standard::Formatter
+
+ignore: # default: []
+  - "vendor/**/*"
+  - "node_modules/**/*"
+
+plugins: # default: []
+  - standard-rails
