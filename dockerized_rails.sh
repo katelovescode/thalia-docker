@@ -86,7 +86,7 @@ gem install bundler rails
 npm install -g yarn
 
 # initiate rails w/ postgres, esbuild, postcss
-rails new . -n "$app_name" -d postgresql -j esbuild -c postcss -T
+rails new . -f -n "$app_name" -d postgresql -j esbuild -c postcss -T
 
 # commit the bare rails initiation
 git add . && git commit -m "Fresh rails install with postgres, esbuild, postcss, and removing minitest"
