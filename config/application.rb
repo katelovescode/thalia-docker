@@ -38,5 +38,19 @@ module Thalia
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    logger = ActiveSupport::TaggedLogging.new(Logger.new($stdout))
+
+    logger.info("Initializing the bot")
+    server do
+      config.after_initialize do
+        logger.info("Server started")
+        bot = DiscordBot.new
+        logger.info("New Bot: #{bot}")
+        at_exit { bot.stop }
+        bot.run(true)
+        logger.info("Invite URL: #{bot.invite_url}")
+      end
+    end
   end
 end
