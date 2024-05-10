@@ -45,8 +45,16 @@ module Thalia
     server do
       config.after_initialize do
         logger.info("Server started")
-        bot = DiscordBot.new
+        bot = Discordrb::Commands::CommandBot.new(
+          token: Rails.application.credentials.dig(:discord, :token),
+          client_id: Rails.application.credentials.dig(:discord, :client_id),
+          prefix: "/"
+        )
         logger.info("New Bot: #{bot}")
+        bot.command :ping do |event|
+          event.respond("Pong!")
+        end
+        logger.info("Commands: #{bot.commands}")
         at_exit { bot.stop }
         bot.run(true)
         logger.info("Invite URL: #{bot.invite_url}")
