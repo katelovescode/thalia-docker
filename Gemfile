@@ -63,3 +63,5 @@ group :development do
   # gem "spring"
 end
 
+
+gem 'thalia_discord_bot', path: 'engines/thalia_discord_bot'
