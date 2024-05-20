@@ -5,6 +5,7 @@ RUN npm install -g npx yarn
 WORKDIR /thalia
 COPY Gemfile /thalia/Gemfile
 COPY Gemfile.lock /thalia/Gemfile.lock
+COPY ./engines/thalia_discord_bot /thalia/engines/thalia_discord_bot
 RUN bundle install
 
 # Add a script to be executed every time the container starts.
