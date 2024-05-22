@@ -18,9 +18,9 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: db
-  username: postgres
-  password: password
+  host: <%= ENV.fetch("DB_HOST") { '' } %>
+  username: <%= ENV.fetch("DB_USERNAME") { '' } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { '' } %>
 
 development:
   <<: *default
@@ -83,5 +83,3 @@ test:
 production:
   <<: *default
   database: thalia_production
-  username: thalia
-  password: <%= ENV["THALIA_DATABASE_PASSWORD"] %>

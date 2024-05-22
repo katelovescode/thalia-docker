@@ -42,4 +42,5 @@
 # Engines
 /engines/*
 
-/.secrets/*
+# Secrets
+/.secrets/**
