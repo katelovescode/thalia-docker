@@ -65,3 +65,4 @@ end
 
 
 gem 'thalia_discord_bot', path: 'engines/thalia_discord_bot'
+gem "dockerfile-rails", ">= 1.6", :group => :development
